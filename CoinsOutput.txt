@@ -1,0 +1,8 @@
+Lab 2 written by Stephen A. Apolinar on 09/20/2016
+Enter the number of quarters:9
+Enter the number of dimes:6
+Enter the number of nickles:7
+Enter the number of pennies:4
+9 quarters, 6 dimes, 7 nickles, and 4 pennies is $3.24
+Enter the number of cents:47
+1 Quarters, 2 Dimes, 0 Nickles, 2 Pennies add up to 47 cents.
