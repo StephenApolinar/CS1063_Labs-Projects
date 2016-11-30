@@ -3,14 +3,8 @@
 import java.util.*;	// Java utility (Scanner class) for keyboard input.
 
 public class Playoffs {
-	// Class Constant variables
-	//public static final Scanner CONSOLE = new Scanner(System.in);
-	
 	// non-Constant class variables
-	//public static int percentChance;
-
-	// boolean class variables
-	//public static boolean team1 = false;
+	public static int percentChance;
 
 	public static void main(String[] args){
 		Scanner CONSOLE = new Scanner(System.in);
@@ -19,41 +13,37 @@ public class Playoffs {
 		System.out.println("Lab 6 written by Stephen A. Apolinar on 11/15/2016");
 		System.out.println();
 		
-		int correctType;
-		int percentChance;
-		
-		String userPrompt = ("The percent chance Team 1 will win a game?" 
-				+ "\nChoose a number between 0 and 100. ");
-		correctType = getInt(CONSOLE, userPrompt);
-		percentChance = goodValue(CONSOLE, userPrompt, correctType);
-		//int randomGenerator = r.nextInt(100);
-			
-		//singleGame(r, percentChance);
-		//playoffs(r, percentChance);
-		seriesIteration(r, percentChance);
-		
+		System.out.println("The percent chance Team 1 will win a game?");
+		System.out.println();
+		// String variable for getInt(); method.	
+		String userPrompt = ("Choose a number between 0 and 100. ");
+
+		getInt(CONSOLE, userPrompt);
+
+		// This while loop is used as check point to ensure the return 
+		// integer is between o and 100. Before running the simulation.
+		while (percentChance < 1 || percentChance > 99) {
+			getInt(CONSOLE, userPrompt);
+		}
+		// After a good integer value is attained the simulation 
+		// is run with the following submethod.
+		seriesIteration(r, percentChance);		
 	}
 	
 	// prompts until a valid number is entered
 	public static int getInt(Scanner CONSOLE, String prompt) {
 		//int userInput;
 		System.out.print(prompt);
+		System.out.println();
 		// first ensures the user inputs an integer
 		while (!CONSOLE.hasNextInt()) {
+			System.out.println();
 			CONSOLE.next(); // to discard the input
 			System.out.println("Not an integer; try again.");
+			System.out.println();
 			System.out.println(prompt);
-			//CONSOLE.nextInt();
-		} return CONSOLE.nextInt();
-	}
-
-	public static int goodValue(Scanner CONSOLE, String prompt, int valueInRange) {
-		// test for valid number between 0 and 100
-		while (valueInRange < 1 || valueInRange > 99) {
-			CONSOLE.next(); // discard input
-			System.out.println("Number is not between 0 and 100!");
-			System.out.println(prompt);
-		} return CONSOLE.nextInt();	
+		} 
+		return percentChance = CONSOLE.nextInt();
 	}
 
 	// Method simulates a singleGame.
