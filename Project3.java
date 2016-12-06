@@ -1,0 +1,201 @@
+/* Created by: Stephen A. Apolinar
+   Date: 11/06/2016 */
+// import the Abstract Window Toolkit package. */
+import java.awt.*;
+/* The beginning of every java program includes a class. */
+public class Project3 {
+	// Class Constant variables
+	public static final int PANEL_WIDTH = 600;
+	public static final int PANEL_HEIGHT = 400;
+	public static final int PATROL_Y = PANEL_HEIGHT - 50;
+	public static final int PATROL_WIDTH = 31;
+	public static final int PATROL_HEIGHT = 17;
+	public static final int ENEMY_Y = 20;
+	public static final int ENEMY_WIDTH = 36;
+	public static final int ENEMY_HEIGHT = 21;
+	public static final int RIGHT_ARROW = 39;
+	public static final int LEFT_ARROW = 37;
+	public static final int UP_ARROW = 38;
+	public static final int SPACE_BAR = 32;
+	public static final int PATROL_MISSILE_LENGTH = 10;
+
+	// non-Constant class variables
+	public static int patrolX = PANEL_WIDTH - PATROL_WIDTH -5;
+	public static int enemyX = 0;
+	public static int patrolMissileX;
+	public static int patrolMissileY = 0;
+
+	// boolean class variables
+	public static boolean hit = false;
+	public static boolean gameOn;
+	
+	// Main method
+	public static void main(String[] args) {
+		DrawingPanel panel = new DrawingPanel(PANEL_WIDTH, PANEL_HEIGHT);
+		Graphics g = panel.getGraphics( );
+		g.drawString("Project 2 by Stephen A. Apolinar", 10, 15);
+		
+		//gameOn = false;
+		handleKeys(panel,g);
+		startGame(panel, g);
+	}
+
+	// submethod calls startGame, which makes calls to other
+	// submethods within the program.
+	public static void startGame(DrawingPanel panel, Graphics g) {
+		drawPatrol(g, Color.GREEN);
+		//gameOn = false;
+		//handleKeys(panel,g);
+		while (gameOn == true) {
+			moveEnemyShipAndDraw(g);
+			handleKeys(panel, g);
+			movePatrolMissileAndDraw(g);
+			// changes boolean class variable value,
+			// causing Enemy vehicle method to execute
+			// else if code.
+			if (detectHit() == true) {
+				hit = true;
+			}
+			panel.sleep(50);	
+		}
+	}
+
+	// submethod calls Patrol vehicle
+	public static void drawPatrol(Graphics g, Color c) {
+		// All variables for method are in Class Constant & 
+		// (non Constant) class variables.
+		// calls method to set color, and sends in parameter.
+		g.setColor(c);
+		// calls method to fill square, uses variables within
+		//  the scope of submethod.
+		g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+	}
+
+	// submethod calls Enemy ship
+	public static void moveEnemyShipAndDraw(Graphics g) {
+		// variable for pixel shit of Enemy vehicle.	
+		int deltaX = 1;
+		// code sequence for moving Enemy vehicle must be 
+		// performed within If statement, inorder to 
+		// execute the stop sequence in Else If statement.
+		if (hit == false) {
+		g.setColor(Color.WHITE);
+		g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+		enemyX = enemyX + deltaX;
+		g.setColor(Color.RED);
+		g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+		} else if (hit == true) {
+			// else if statement executes vehicle stop,
+			// changes vehicle to black, and prints.
+			g.setColor(Color.BLACK);
+			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			g.setColor(Color.GREEN);
+			g.drawString("Enemy ship hit!", 5, 395);
+		}
+		// prints statement if vehicle travels off screen.
+		if (enemyX >= PANEL_WIDTH) {
+			g.setColor(Color.RED);
+			g.drawString("Enemy ship got away!", 5, 395);
+		}
+	}
+
+	// submethod calls Arrow keys for control of Patrol vehicle
+	public static void handleKeys(DrawingPanel panel, Graphics g) {
+		// variable for pixel shift of Patrol vehicle
+		int deltaX = 3;
+		// declares a variable as an integer that is equal to 
+		// the return value of panel.getKeyCode object.
+		int arrowKeys = panel.getKeyCode();
+		// If return KeyCode is 0 nothing happens.
+		if (arrowKeys == 0) {
+			return;
+		}
+		// If return KeyCode is Right_ARROW, vehicle moves right
+		if (arrowKeys == RIGHT_ARROW) {
+			g.setColor(Color.WHITE);
+			g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+			patrolX = patrolX + deltaX;
+			g.setColor(Color.GREEN);
+			g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+			// Prevents vehicle from running off screen
+			if (patrolX >= PANEL_WIDTH - PATROL_WIDTH) {
+				g.setColor(Color.WHITE);
+				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+				patrolX = (PANEL_WIDTH - PATROL_WIDTH) - 3;
+				g.setColor(Color.GREEN);
+				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+			}
+		}
+		// If return KeyCode is Left_ARROW, vehicle moves left
+		if (arrowKeys == LEFT_ARROW) {
+			g.setColor(Color.WHITE);
+			g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+			patrolX = patrolX - deltaX;
+			g.setColor(Color.GREEN);
+			g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+			// Prevents vehicle from running off screen
+			if (patrolX <= 0) {
+				g.setColor(Color.WHITE);
+				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+				patrolX = 3;
+				g.setColor(Color.GREEN);
+				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+			}
+		}
+		// KeyCode must return UP_ARROW, and patrolMissileY == 0,
+		// in order to set parameter to fire missile.  This double 
+		// requirement test ensures one missile fires at a time.
+		if (arrowKeys == UP_ARROW && patrolMissileY == 0) {
+			// initializes missile fire position at center, and
+			// in front of vehicle.
+			patrolMissileX = patrolX + (PATROL_WIDTH/2);
+			patrolMissileY = PATROL_Y - 11;
+		}
+
+		if (arrowKeys == SPACE_BAR) {
+			//gameOn = false;
+			gameOn = true;
+		}
+
+	}
+
+	// submethod for missile movement rules, and movement sequence.
+	public static void movePatrolMissileAndDraw(Graphics g) {
+		// variable for pixel shift of missile up the screen
+		int deltaY = 5;
+		// If patrolMissileY is greater than 0, code sequence for
+		// missile travel up the screen.
+		if (patrolMissileY > 0) {
+			g.setColor(Color.WHITE);
+			g.drawLine(patrolMissileX, patrolMissileY, patrolMissileX, patrolMissileY
+				       	- PATROL_MISSILE_LENGTH);
+			patrolMissileY = patrolMissileY - deltaY;
+			g.setColor(Color.BLACK);
+			g.drawLine(patrolMissileX, patrolMissileY, patrolMissileX, patrolMissileY
+				       	- PATROL_MISSILE_LENGTH);
+		// else if patrolMissileY is 0, or negative, draw in 
+		// white. Then reinitialize to 0.
+		} else if (patrolMissileY <= 0) {
+			g.setColor(Color.WHITE);
+			g.drawLine(patrolMissileX, patrolMissileY, patrolMissileX, patrolMissileY
+				       	- PATROL_MISSILE_LENGTH);
+			patrolMissileY = 0;
+		}
+	}
+	
+	// submethod for Detecting a hit on Enemy ship.
+	public static boolean detectHit() {
+		// Must declare boolean variable within the method for return value, 
+		// and initialze the variable to the opposite boolean value of 
+		// the value desired from method.  To ensure the method is executing
+		// correctly.
+		boolean enemyHit = false;
+		// You may link multiple test values within an If statement.
+		if (patrolMissileY >= ENEMY_Y && patrolMissileY <= (ENEMY_Y + ENEMY_HEIGHT)
+			       	&& patrolMissileX >= enemyX && patrolMissileX <= (enemyX +
+				       	ENEMY_WIDTH)) {
+			// if all test values are true the variable changes boolean value.
+			enemyHit = true;
+		} return enemyHit;
+	}
+}
