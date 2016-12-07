@@ -16,6 +16,7 @@ public class Project3 {
 	public static final int ENEMY_WIDTH = 36;
 	public static final int ENEMY_HEIGHT = 21;
 	public static final int PATROL_MISSILE_LENGTH = 10;
+	public static final int ENEMY_MISSILE_LENGTH = 5;
 
 	// keyboard keys
 	public static final int RIGHT_ARROW = 39;
@@ -29,6 +30,9 @@ public class Project3 {
 	public static double changeDirection;
 	public static int patrolMissileX;
 	public static int patrolMissileY = 0;
+	public static int enemyMissileX;
+	public static int enemyMissileY = 400;
+	public static int hit = 0;
 
 	// messages
 	public static final String START_MESSAGE = "Push Space Bar to Start";
@@ -39,9 +43,11 @@ public class Project3 {
 	public static final int HEADING_Y = 15;
 	public static final int MESSAGE_X = 10;
 	public static final int MESSAGE_Y = PANEL_HEIGHT - 10;
+	
 	// boolean class variables
-	public static boolean hit = false;
 	public static boolean running = false;
+	public static boolean enemyHit = false;
+	public static boolean patrolHit = false;
 	
 	public static Random random = new Random();
 	
@@ -53,7 +59,7 @@ public class Project3 {
 		
 		//gameOn = false;
 		restart(g);
-		running = false;
+		//running = false;
 		showMessage(g, START_MESSAGE, Color.BLACK);
 		startGame(panel, g);
 	}
@@ -74,14 +80,18 @@ public class Project3 {
 		drawPatrol(g, Color.GREEN);
 		while (true) {
 			moveEnemyShipAndDraw(g);
+			moveEnemyMissileAndDraw(g);
 			//changeDirection = random.nextDouble();
 			handleKeys(panel, g);
 			movePatrolMissileAndDraw(g);
 			// changes boolean class variable value,
 			// causing Enemy vehicle method to execute
 			// else if code.
-			if (detectHit() == true) {
-				hit = true;
+			detectHit();
+			if (hit == 1) {
+				enemyHit = true;
+			} else if (hit == -1) {
+				patrolHit = true;
 			}
 			panel.sleep(50);	
 		}
@@ -89,11 +99,14 @@ public class Project3 {
 
 	public static void restart(Graphics g) {
 		running = true;
-		hit = false;
+		hit = 0;
+		enemyHit = false;
+		patrolHit = false;
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
 		showHeading(g, HEADING_MESSAGE, Color.BLACK);
 		patrolMissileY = 0;
+		enemyMissileX = 400;
 		enemyX = 0;
 		patrolX = PANEL_WIDTH - PATROL_WIDTH -5;
 		drawPatrol(g, Color.GREEN);
@@ -117,7 +130,7 @@ public class Project3 {
 		// code sequence for moving Enemy vehicle must be 
 		// performed within If statement, inorder to 
 		// execute the stop sequence in Else If statement.
-		if (hit == false) {
+		if (enemyHit == false) {
 			
 			//System.out.println(changeDirection);
 			if (enemyX <= 1) {
@@ -143,6 +156,10 @@ public class Project3 {
 				enemyX = enemyX + enemyMoveAmount;
 				g.setColor(Color.RED);
 				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+				if (enemyMissileY == 400 && running == false) {
+				enemyMissileX = enemyX + (ENEMY_WIDTH/2);
+				enemyMissileY = (ENEMY_Y + ENEMY_HEIGHT) + 1;
+				}
 			} else if (random.nextDouble() < .02) {
 				enemyMoveAmount = 0;
 				g.setColor(Color.WHITE);
@@ -150,6 +167,10 @@ public class Project3 {
 				enemyX = enemyX + enemyMoveAmount;
 				g.setColor(Color.RED);
 				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+				if (enemyMissileY == 400 && running == false) {
+				enemyMissileX = enemyX + (ENEMY_WIDTH/2);
+				enemyMissileY = (ENEMY_Y + ENEMY_HEIGHT) + 1;
+				}
 			} else if (random.nextDouble() < .02) {
 				enemyMoveAmount = 1;
 				g.setColor(Color.WHITE);
@@ -157,53 +178,27 @@ public class Project3 {
 				enemyX = enemyX + enemyMoveAmount;
 				g.setColor(Color.RED);
 				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+				if (enemyMissileY == 400 && running == false) {
+				enemyMissileX = enemyX + (ENEMY_WIDTH/2);
+				enemyMissileY = (ENEMY_Y + ENEMY_HEIGHT) + 1;
+				}
 			}
 			g.setColor(Color.WHITE);
 			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
 			enemyX = enemyX + enemyMoveAmount;
 			g.setColor(Color.RED);
 			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
-			// prints statement if vehicle travels off screen.
-			/*if (enemyX <= 1) {
-				enemyMoveAmount = 1;
-				g.setColor(Color.WHITE);
-				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
-				enemyX = enemyX + enemyMoveAmount;
-				g.setColor(Color.RED);
-				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
-			} else if (enemyX >= PANEL_WIDTH - ENEMY_WIDTH) {
-				enemyMoveAmount = -1;
-				g.setColor(Color.WHITE);
-				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
-				enemyX = enemyX + enemyMoveAmount;
-				g.setColor(Color.RED);
-				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
-			}*/
-		} else if (hit == true) {
+		} else if (enemyHit == true) {
 			// else if statement executes vehicle stop,
 			// changes vehicle to black, and prints.
 			g.setColor(Color.BLACK);
 			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
-			g.setColor(Color.GREEN);
 			g.drawString("Enemy ship hit!", 5, 395);
-		}
-		// prints statement if vehicle travels off screen.
-		/*if (enemyX < 1) {
-			enemyMoveAmount = 1;
-			g.setColor(Color.WHITE);
-			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
-			enemyX = enemyX + enemyMoveAmount;
+		} 
+		if (patrolHit == true) {
 			g.setColor(Color.RED);
 			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
 		}
-		if (enemyX >= PANEL_WIDTH - ENEMY_WIDTH) {
-			enemyMoveAmount = -1;
-			g.setColor(Color.WHITE);
-			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
-			enemyX = enemyX + enemyMoveAmount;
-			g.setColor(Color.RED);
-			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
-		}*/
 	}
 
 	// submethod calls Arrow keys for control of Patrol vehicle
@@ -217,52 +212,57 @@ public class Project3 {
 		if (arrowKeys == 0) {
 			return;
 		}
-		// If return KeyCode is Right_ARROW, vehicle moves right
-		if (arrowKeys == RIGHT_ARROW) {
-			g.setColor(Color.WHITE);
-			g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
-			patrolX = patrolX + deltaX;
-			g.setColor(Color.GREEN);
-			g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
-			// Prevents vehicle from running off screen
-			if (patrolX >= PANEL_WIDTH - PATROL_WIDTH) {
-				g.setColor(Color.WHITE);
-				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
-				patrolX = (PANEL_WIDTH - PATROL_WIDTH) - 3;
-				g.setColor(Color.GREEN);
-				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
-			}
-		}
-		// If return KeyCode is Left_ARROW, vehicle moves left
-		if (arrowKeys == LEFT_ARROW) {
-			g.setColor(Color.WHITE);
-			g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
-			patrolX = patrolX - deltaX;
-			g.setColor(Color.GREEN);
-			g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
-			// Prevents vehicle from running off screen
-			if (patrolX <= 0) {
-				g.setColor(Color.WHITE);
-				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
-				patrolX = 3;
-				g.setColor(Color.GREEN);
-				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
-			}
-		}
-		// KeyCode must return UP_ARROW, and patrolMissileY == 0,
-		// in order to set parameter to fire missile.  This double 
-		// requirement test ensures one missile fires at a time.
-		if (arrowKeys == UP_ARROW && patrolMissileY == 0) {
-			// initializes missile fire position at center, and
-			// in front of vehicle.
-			patrolMissileX = patrolX + (PATROL_WIDTH/2);
-			patrolMissileY = PATROL_Y - 11;
-		}
-
 		if (arrowKeys == ' ') {
 			restart(g);
+			running = false;
 		}
-
+		if (patrolHit == true) {
+			g.setColor(Color.BLACK);
+			g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+			g.drawString("PATROL SHIP HIT!", PANEL_WIDTH/2, PANEL_HEIGHT/2);
+		} else if (patrolHit == false) {
+			// If return KeyCode is Right_ARROW, vehicle moves right
+			if (arrowKeys == RIGHT_ARROW) {
+				g.setColor(Color.WHITE);
+				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+				patrolX = patrolX + deltaX;
+				g.setColor(Color.GREEN);
+				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+				// Prevents vehicle from running off screen
+				if (patrolX >= PANEL_WIDTH - PATROL_WIDTH) {
+					g.setColor(Color.WHITE);
+					g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+					patrolX = (PANEL_WIDTH - PATROL_WIDTH) - 3;
+					g.setColor(Color.GREEN);
+					g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+				}
+			}
+			// If return KeyCode is Left_ARROW, vehicle moves left
+			if (arrowKeys == LEFT_ARROW) {
+				g.setColor(Color.WHITE);
+				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+				patrolX = patrolX - deltaX;
+				g.setColor(Color.GREEN);
+				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+				// Prevents vehicle from running off screen
+				if (patrolX <= 0) {
+					g.setColor(Color.WHITE);
+					g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+					patrolX = 3;
+					g.setColor(Color.GREEN);
+					g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+				}
+			}
+			// KeyCode must return UP_ARROW, and patrolMissileY == 0,
+			// in order to set parameter to fire missile.  This double 
+			// requirement test ensures one missile fires at a time.
+			if (arrowKeys == UP_ARROW && patrolMissileY == 0) {
+				// initializes missile fire position at center, and
+				// in front of vehicle.
+				patrolMissileX = patrolX + (PATROL_WIDTH/2);
+				patrolMissileY = PATROL_Y - 11;
+			}
+		} 
 	}
 
 	// submethod for missile movement rules, and movement sequence.
@@ -288,20 +288,49 @@ public class Project3 {
 			patrolMissileY = 0;
 		}
 	}
-	
+
+	public static void moveEnemyMissileAndDraw(Graphics g) {
+		// variable for pixel shift of missile up the screen
+		int deltaY = 5;
+		// If patrolMissileY is greater than 0, code sequence for
+		// missile travel up the screen.
+		if (enemyMissileY < 400) {
+			g.setColor(Color.WHITE);
+			g.drawLine(enemyMissileX, enemyMissileY, enemyMissileX, enemyMissileY
+				       	+ ENEMY_MISSILE_LENGTH);
+			enemyMissileY = enemyMissileY + deltaY;
+			g.setColor(Color.RED);
+			g.drawLine(enemyMissileX, enemyMissileY, enemyMissileX, enemyMissileY
+				       	+ ENEMY_MISSILE_LENGTH);
+		// else if patrolMissileY is 0, or negative, draw in 
+		// white. Then reinitialize to 0.
+		} else if (enemyMissileY >= 400) {
+			g.setColor(Color.WHITE);
+			g.drawLine(patrolMissileX, patrolMissileY, patrolMissileX, patrolMissileY
+				       	- PATROL_MISSILE_LENGTH);
+			enemyMissileY = 400;
+		}
+	}
+
 	// submethod for Detecting a hit on Enemy ship.
-	public static boolean detectHit() {
+	public static int detectHit() {
 		// Must declare boolean variable within the method for return value, 
 		// and initialze the variable to the opposite boolean value of 
 		// the value desired from method.  To ensure the method is executing
 		// correctly.
-		boolean enemyHit = false;
 		// You may link multiple test values within an If statement.
 		if (patrolMissileY >= ENEMY_Y && patrolMissileY <= (ENEMY_Y + ENEMY_HEIGHT)
 			       	&& patrolMissileX >= enemyX && patrolMissileX <= (enemyX +
 				       	ENEMY_WIDTH)) {
 			// if all test values are true the variable changes boolean value.
-			enemyHit = true;
-		} return enemyHit;
+			hit = 1;
+		} else if (enemyMissileY >= PATROL_Y && enemyMissileY <= (PATROL_Y + PATROL_HEIGHT)
+			       	&& enemyMissileX >= patrolX && enemyMissileX <= (patrolX +
+				       	PATROL_WIDTH)) {
+			// if all test values are true the variable changes boolean value.
+			hit = -1;
+		} else {
+			hit = 0;
+		} return hit;
 	}
 }
