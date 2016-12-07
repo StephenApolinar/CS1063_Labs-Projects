@@ -2,6 +2,8 @@
    Date: 11/06/2016 */
 // import the Abstract Window Toolkit package. */
 import java.awt.*;
+import java.util.*;
+
 /* The beginning of every java program includes a class. */
 public class Project3 {
 	// Class Constant variables
@@ -22,7 +24,9 @@ public class Project3 {
 
 	// non-Constant class variables
 	public static int patrolX = PANEL_WIDTH - PATROL_WIDTH -5;
-	public static int enemyX = 0;
+	public static int enemyX = 1;
+	public static int enemyMoveAmount;
+	public static double changeDirection;
 	public static int patrolMissileX;
 	public static int patrolMissileY = 0;
 
@@ -70,6 +74,7 @@ public class Project3 {
 		drawPatrol(g, Color.GREEN);
 		while (true) {
 			moveEnemyShipAndDraw(g);
+			//changeDirection = random.nextDouble();
 			handleKeys(panel, g);
 			movePatrolMissileAndDraw(g);
 			// changes boolean class variable value,
@@ -108,16 +113,72 @@ public class Project3 {
 	// submethod calls Enemy ship
 	public static void moveEnemyShipAndDraw(Graphics g) {
 		// variable for pixel shit of Enemy vehicle.	
-		int deltaX = 1;
+		//enemyMoveAmount = 1;
 		// code sequence for moving Enemy vehicle must be 
 		// performed within If statement, inorder to 
 		// execute the stop sequence in Else If statement.
 		if (hit == false) {
-		g.setColor(Color.WHITE);
-		g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
-		enemyX = enemyX + deltaX;
-		g.setColor(Color.RED);
-		g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			
+			//System.out.println(changeDirection);
+			if (enemyX <= 1) {
+				enemyMoveAmount = 1;
+				g.setColor(Color.WHITE);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+				enemyX = enemyX + enemyMoveAmount;
+				g.setColor(Color.RED);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			} else if (enemyX >= PANEL_WIDTH - ENEMY_WIDTH) {
+				enemyMoveAmount = -1;
+				g.setColor(Color.WHITE);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+				enemyX = enemyX + enemyMoveAmount;
+				g.setColor(Color.RED);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			}
+			//changeDirection = random.nextDouble;
+			if (random.nextDouble() < .02) {
+				enemyMoveAmount = -1;
+				g.setColor(Color.WHITE);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+				enemyX = enemyX + enemyMoveAmount;
+				g.setColor(Color.RED);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			} else if (random.nextDouble() < .02) {
+				enemyMoveAmount = 0;
+				g.setColor(Color.WHITE);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+				enemyX = enemyX + enemyMoveAmount;
+				g.setColor(Color.RED);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			} else if (random.nextDouble() < .02) {
+				enemyMoveAmount = 1;
+				g.setColor(Color.WHITE);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+				enemyX = enemyX + enemyMoveAmount;
+				g.setColor(Color.RED);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			}
+			g.setColor(Color.WHITE);
+			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			enemyX = enemyX + enemyMoveAmount;
+			g.setColor(Color.RED);
+			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			// prints statement if vehicle travels off screen.
+			/*if (enemyX <= 1) {
+				enemyMoveAmount = 1;
+				g.setColor(Color.WHITE);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+				enemyX = enemyX + enemyMoveAmount;
+				g.setColor(Color.RED);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			} else if (enemyX >= PANEL_WIDTH - ENEMY_WIDTH) {
+				enemyMoveAmount = -1;
+				g.setColor(Color.WHITE);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+				enemyX = enemyX + enemyMoveAmount;
+				g.setColor(Color.RED);
+				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			}*/
 		} else if (hit == true) {
 			// else if statement executes vehicle stop,
 			// changes vehicle to black, and prints.
@@ -127,10 +188,22 @@ public class Project3 {
 			g.drawString("Enemy ship hit!", 5, 395);
 		}
 		// prints statement if vehicle travels off screen.
-		if (enemyX >= PANEL_WIDTH) {
+		/*if (enemyX < 1) {
+			enemyMoveAmount = 1;
+			g.setColor(Color.WHITE);
+			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			enemyX = enemyX + enemyMoveAmount;
 			g.setColor(Color.RED);
-			g.drawString("Enemy ship got away!", 5, 395);
+			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
 		}
+		if (enemyX >= PANEL_WIDTH - ENEMY_WIDTH) {
+			enemyMoveAmount = -1;
+			g.setColor(Color.WHITE);
+			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+			enemyX = enemyX + enemyMoveAmount;
+			g.setColor(Color.RED);
+			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
+		}*/
 	}
 
 	// submethod calls Arrow keys for control of Patrol vehicle
