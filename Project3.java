@@ -1,5 +1,5 @@
 /* Created by: Stephen A. Apolinar
-   Date: 11/06/2016 */
+   Date: 12/072016 */
 // import the Abstract Window Toolkit package. */
 import java.awt.*;
 import java.util.*;
@@ -55,7 +55,7 @@ public class Project3 {
 	public static void main(String[] args) {
 		DrawingPanel panel = new DrawingPanel(PANEL_WIDTH, PANEL_HEIGHT);
 		Graphics g = panel.getGraphics( );
-		g.drawString("Project 2 by Stephen A. Apolinar", 10, 15);
+		g.drawString("Project 3 by Stephen A. Apolinar", 10, 15);
 		
 		//gameOn = false;
 		restart(g);
@@ -63,12 +63,12 @@ public class Project3 {
 		showMessage(g, START_MESSAGE, Color.BLACK);
 		startGame(panel, g);
 	}
-
+	// method call to print statement at start of program
 	public static void showMessage(Graphics g, String message, Color c) {
 		g.setColor(c);
 		g.drawString(message, MESSAGE_X, MESSAGE_Y);
 	}
-	
+	// method call to print Heading Message
 	public static void showHeading(Graphics g, String message, Color c) {
 		g.setColor(c);
 		g.drawString(message, HEADING_X, HEADING_Y);
@@ -96,7 +96,7 @@ public class Project3 {
 			panel.sleep(50);	
 		}
 	}
-
+	// method resets program with space bar push
 	public static void restart(Graphics g) {
 		running = true;
 		hit = 0;
@@ -126,13 +126,9 @@ public class Project3 {
 	// submethod calls Enemy ship
 	public static void moveEnemyShipAndDraw(Graphics g) {
 		// variable for pixel shit of Enemy vehicle.	
-		//enemyMoveAmount = 1;
-		// code sequence for moving Enemy vehicle must be 
-		// performed within If statement, inorder to 
-		// execute the stop sequence in Else If statement.
-		if (enemyHit == false) {
-			
-			//System.out.println(changeDirection);
+
+		// code sequence for moving Enemy vehicle.
+		if (enemyHit == false && patrolHit == false) {
 			if (enemyX <= 1) {
 				enemyMoveAmount = 1;
 				g.setColor(Color.WHITE);
@@ -148,7 +144,7 @@ public class Project3 {
 				g.setColor(Color.RED);
 				g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
 			}
-			//changeDirection = random.nextDouble;
+			
 			if (random.nextDouble() < .02) {
 				enemyMoveAmount = -1;
 				g.setColor(Color.WHITE);
@@ -193,12 +189,8 @@ public class Project3 {
 			// changes vehicle to black, and prints.
 			g.setColor(Color.BLACK);
 			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
-			g.drawString("Enemy ship hit!", 5, 395);
+			g.drawString("ENEMY SHIP HIT!", PANEL_WIDTH/2, PANEL_HEIGHT/2);
 		} 
-		if (patrolHit == true) {
-			g.setColor(Color.RED);
-			g.fillRect(enemyX, ENEMY_Y, ENEMY_WIDTH, ENEMY_HEIGHT);
-		}
 	}
 
 	// submethod calls Arrow keys for control of Patrol vehicle
@@ -210,17 +202,20 @@ public class Project3 {
 		int arrowKeys = panel.getKeyCode();
 		// If return KeyCode is 0 nothing happens.
 		if (arrowKeys == 0) {
-			return;
+			if (patrolHit == true) {
+				//patrolX = patrolX + 0;
+				g.setColor(Color.BLACK);
+				g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+				g.drawString("PATROL SHIP HIT!", PANEL_WIDTH/2, PANEL_HEIGHT/2);
+			}
+		return;
 		}
 		if (arrowKeys == ' ') {
 			restart(g);
 			running = false;
 		}
-		if (patrolHit == true) {
-			g.setColor(Color.BLACK);
-			g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
-			g.drawString("PATROL SHIP HIT!", PANEL_WIDTH/2, PANEL_HEIGHT/2);
-		} else if (patrolHit == false) {
+		
+		if (patrolHit == false && enemyHit == false) {
 			// If return KeyCode is Right_ARROW, vehicle moves right
 			if (arrowKeys == RIGHT_ARROW) {
 				g.setColor(Color.WHITE);
@@ -262,6 +257,11 @@ public class Project3 {
 				patrolMissileX = patrolX + (PATROL_WIDTH/2);
 				patrolMissileY = PATROL_Y - 11;
 			}
+		} else if (patrolHit == true) {
+			//patrolX = patrolX + 0;
+			g.setColor(Color.BLACK);
+			g.fillRect(patrolX, PATROL_Y, PATROL_WIDTH, PATROL_HEIGHT);
+			g.drawString("PATROL SHIP HIT!", PANEL_WIDTH/2, PANEL_HEIGHT/2);
 		} 
 	}
 
@@ -314,10 +314,7 @@ public class Project3 {
 
 	// submethod for Detecting a hit on Enemy ship.
 	public static int detectHit() {
-		// Must declare boolean variable within the method for return value, 
-		// and initialze the variable to the opposite boolean value of 
-		// the value desired from method.  To ensure the method is executing
-		// correctly.
+		// Used and integer return for logic test.
 		// You may link multiple test values within an If statement.
 		if (patrolMissileY >= ENEMY_Y && patrolMissileY <= (ENEMY_Y + ENEMY_HEIGHT)
 			       	&& patrolMissileX >= enemyX && patrolMissileX <= (enemyX +
